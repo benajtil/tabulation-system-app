@@ -3,8 +3,14 @@
         {
             "previewLimit": 50,
             "driver": "SQLite",
+            "name": "festive",
+            "database": "${workspaceFolder:htdocs}/db/festive.db"
+        },
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
             "name": "floatparade",
-            "database": "${workspaceFolder:www}/db/floatparade.db"
+            "database": "${workspaceFolder:htdocs}/db/floatparade.db"
         }
     ],
     "sqltools.useNodeRuntime": true

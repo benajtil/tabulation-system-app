@@ -13,7 +13,6 @@
 <?php
 require('../db/db_connection_sqlite.php'); 
 
-session_start(); 
 
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error_message'] = "You must be logged in to access this page.";
@@ -24,9 +23,9 @@ if (!isset($_SESSION['user_id'])) {
 $user_query = "SELECT role, name FROM user WHERE id = :user_id";
 $stmt = $conn->prepare($user_query);
 if ($stmt === false) {
-    die('Prepare failed: ' . htmlspecialchars($errorInfo[2]));
+    die('Prepare failed: ' . htmlspecialchars($conn->errorInfo()[2]));
 }
-$stmt->bindValue(':user_id', $_SESSION['user_id'], SQLITE3_INTEGER);
+$stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
 $result = $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -54,8 +53,8 @@ $stmt = $conn->prepare($checkJudgeScoreSql);
 if ($stmt === false) {
     die('Prepare failed: ' . htmlspecialchars($conn->errorInfo()[2]));
 }
-$stmt->bindValue(':entry_num', $entry_num, SQLITE3_INTEGER);
-$stmt->bindValue(':judge_name', $judge_name, SQLITE3_TEXT);
+$stmt->bindValue(':entry_num', $entry_num, PDO::PARAM_INT);
+$stmt->bindValue(':judge_name', $judge_name, PDO::PARAM_STR);
 $result = $stmt->execute();
 $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -68,7 +67,6 @@ if ($row) {
           </script>";
     exit;
 }
-
 ?>
 
 <div class="container">
@@ -80,19 +78,19 @@ if ($row) {
         <input type="hidden" id="entry_num" name="entry_num" value="<?php echo htmlspecialchars($entry_num); ?>">
         <div class="form-group">
             <label for="overall_appearance">Overall Appearance and Impact:</label>
-            <input id="overall_appearance" placeholder ="1-30" name="overall_appearance" type="number" min="1" max="30" required>
+            <input id="overall_appearance" placeholder="1-30" name="overall_appearance" type="number" min="1" max="30" required>
         </div>
         <div class="form-group">
             <label for="artistry_design">Artistry/Design:</label>
-            <input id="artistry_design" name="artistry_design" type="number" min="1" max="20" placeholder ="1-20" required>
+            <input id="artistry_design" name="artistry_design" type="number" min="1" max="20" placeholder="1-20" required>
         </div>
         <div class="form-group">
             <label for="craftsmanship">Craftsmanship:</label>
-            <input id="craftsmanship" name="craftsmanship" type="number" min="1" max="30" placeholder ="1-30" required>
+            <input id="craftsmanship" name="craftsmanship" type="number" min="1" max="30" placeholder="1-30" required>
         </div>
         <div class="form-group">
             <label for="relevance_theme">Relevance to Festival Theme:</label>
-            <input id="relevance_theme" name="relevance_theme" type="number" min="1" max="20" placeholder ="1-20" required>
+            <input id="relevance_theme" name="relevance_theme" type="number" min="1" max="20" placeholder="1-20" required>
         </div>
         <div class="buttons">
             <button type="submit">Submit</button>

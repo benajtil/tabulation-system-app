@@ -6,7 +6,7 @@ require('fetch_festive.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Most festive contingent</title>
+    <title>MOST FESTIVE CONTANGENT</title>
     <link rel="stylesheet" href="css/festive.css">
 </head>
 <body>
@@ -18,7 +18,7 @@ require('fetch_festive.php');
 </div>
 
 <div class="container">
-    <h1>MOST FESTIVE CONTINGENT</h1>
+    <h1>MOST FESTIVE CONTANGENT</h1>
     <h1>TABULATION SHEET</h1>
     <table>
         <thead>
@@ -42,7 +42,7 @@ require('fetch_festive.php');
                             ?>
                         </td>
                     <?php endforeach; ?>
-                    <td><?php echo htmlspecialchars($score['avg_total']); ?></td>
+                    <td><?php echo htmlspecialchars(number_format($score['avg_total'], 4)); ?></td>
                     <td><?php echo htmlspecialchars($score['ranking']); ?></td>
                 </tr>
             <?php endforeach; ?>

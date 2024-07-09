@@ -1,36 +1,23 @@
 <?php
 session_start();
-require('../db/db_connection_festive.php');
+require('../db/db_connection_sqlite_festive.php'); // Ensure this path is correct
 
+// Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
     header("Location: ../index.php");
     exit;
 }
 
+// Fetch the current user's name
 $user_query = "SELECT name FROM user WHERE id = ?";
 $stmt = $conn->prepare($user_query);
-if ($stmt === false) {
-    die('Prepare failed: ' . htmlspecialchars($conn->error));
-}
-$stmt->bind_param("i", $_SESSION['user_id']);
-$stmt->execute();
-$stmt->bind_result($judge_name);
-$stmt->fetch();
-$stmt->close();
+$stmt->execute([$_SESSION['user_id']]);
+$judge_name = $stmt->fetchColumn();
 
-// Query to get users with role 1
+// Fetch the list of judges
 $judge_query = "SELECT name FROM user WHERE role = 1";
-$judge_stmt = $conn->prepare($judge_query);
-if ($judge_stmt === false) {
-    die('Prepare failed: ' . htmlspecialchars($conn->error));
-}
-$judge_stmt->execute();
-$judge_stmt->bind_result($judge);
-$judges = [];
-while ($judge_stmt->fetch()) {
-    $judges[] = $judge;
-}
-$judge_stmt->close();
+$judge_stmt = $conn->query($judge_query);
+$judges = $judge_stmt->fetchAll(PDO::FETCH_COLUMN);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,10 +26,33 @@ $judge_stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JUDGING SHEET</title>
-    <link rel="stylesheet" href="/festive/css/festive.css">
+    <link rel="stylesheet" href="css/festive.css">
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
     <style>
+        .overall button {
+            border-radius: 10px;
+            background-color: #536cff;
+            border: none;
+            color: #030404;
+            text-align: center;
+            font-size: 14px;
+            padding: 20px;
+            width: 100%;
+            cursor: pointer;
+            margin: 5px;
+            top: 0;
+            height: 70px;
+            font-weight: bold;
+            display: inline-block;
+            z-index: 3;
+        }
+
+        .overall button:hover {
+            background-color: #011f85;
+            color: #ffffff;
+        }
+
         .top10 {
             background-color: blue;
             color: white;
@@ -64,11 +74,9 @@ $judge_stmt->close();
             margin-bottom: 5px;
         }
 
-
         .no-underline {
             text-decoration: none;
         }
-
     </style>
 </head>
 
@@ -76,10 +84,10 @@ $judge_stmt->close();
     <div class="tnalaklogo">
         <img src="../tnalak.png" alt="t'nalak image">
     </div>
-    <div class = "overall">
-    <a href="judgesfestive.php"><button class = "judging">Tabulation Sheet</button></a>
-   <a href="overallfestive.php"><button>Judging Sheet</button></a>
-   </div>
+    <div class="overall">
+        <a href="judgesfestive.php"><button class="judging">Tabulation Sheet</button></a>
+        <a href="overallfestive.php"><button>Judging Sheet</button></a>
+    </div>
     <div class="emblem">
         <img src="../emblem.png" alt="t'nalak image">
     </div>

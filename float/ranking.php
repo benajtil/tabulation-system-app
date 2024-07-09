@@ -87,6 +87,8 @@ $judges = $judge_stmt->fetchAll(PDO::FETCH_COLUMN);
     <div class="overall">
         <a href="judges.php"><button class="judging">Tabulation Sheet</button></a>
         <a href="overallranking.php"><button>Judging Sheet</button></a>
+        <a href="../sync.php"><button>Sync Data</button></a>
+
     </div>
     <div class="emblem">
         <img src="../emblem.png" alt="t'nalak image">

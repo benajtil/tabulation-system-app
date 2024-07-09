@@ -1,17 +1,17 @@
 <?php
-require('../db/db_connection_sqlite.php');
+require('../db/db_connection_sqlite_festive.php');
 
 $scores = [];
 $all_scores = [];
 $judges = [];
 
+// Fetch average scores and deductions for each entry
 $sql = "SELECT entry_num, 
-               AVG(overall_appearance) AS avg_oa, 
-               AVG(artistry_design) AS avg_ad, 
-               AVG(craftsmanship) AS avg_cr, 
-               AVG(relevance_theme) AS avg_rt, 
+               AVG(festive_spirit) AS avg_fsp, 
+               AVG(costume_and_props) AS avg_cap, 
+               AVG(relevance_to_the_theme) AS avg_rt, 
                IFNULL(MAX(deduction), 0) AS max_deduction,
-               (AVG(overall_appearance) + AVG(artistry_design) + AVG(craftsmanship) + AVG(relevance_theme) - IFNULL(MAX(deduction), 0)) AS avg_total 
+               (AVG(festive_spirit) + AVG(costume_and_props) + AVG(relevance_to_the_theme) - IFNULL(MAX(deduction), 0)) AS avg_total 
         FROM scores 
         GROUP BY entry_num 
         ORDER BY avg_total DESC";

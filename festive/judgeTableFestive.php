@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOST FESTIVE CONTIGENT</title>
-    <link rel="stylesheet" href="../festive/css/judgeTableFestive.css?v=1.0">
+    <title>Most Festive Contingent</title>
+    <link rel="stylesheet" href="../float/css/judgeTable.css?v=1.0">
 </head>
 <body>
 <?php 
     include ('include/navigation.php');
 ?>
 <?php
-require('../db/db_connection_festive.php');
+require('../db/db_connection_sqlite.php'); 
 
 if (!isset($_SESSION['user_id'])) {
     $_SESSION['error_message'] = "You must be logged in to access this page.";
@@ -19,16 +19,20 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-$user_query = "SELECT role, name FROM user WHERE id = ?";
+$user_query = "SELECT role, name FROM user WHERE id = :user_id";
 $stmt = $conn->prepare($user_query);
 if ($stmt === false) {
-    die('Prepare failed: ' . htmlspecialchars($conn->error));
+    die('Prepare failed: ' . htmlspecialchars($conn->errorInfo()[2]));
 }
-$stmt->bind_param("i", $_SESSION['user_id']);
-$stmt->execute();
-$stmt->bind_result($role, $judge_name);
-$stmt->fetch();
-$stmt->close();
+$stmt->bindValue(':user_id', $_SESSION['user_id'], PDO::PARAM_INT);
+$result = $stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$row) {
+    die('User not found');
+}
+$role = $row['role'];
+$judge_name = $row['name'];
 
 if ($role !== 1) {
     $_SESSION['error_message'] = "You do not have permission to score.";
@@ -42,27 +46,26 @@ if (!isset($_GET['entry_num'])) {
 
 $entry_num = $_GET['entry_num'];
 
-$checkJudgeScoreSql = "SELECT * FROM scores WHERE entry_num = ? AND judge_name = ?";
+$checkJudgeScoreSql = "SELECT * FROM scores WHERE entry_num = :entry_num AND judge_name = :judge_name";
 $stmt = $conn->prepare($checkJudgeScoreSql);
 if ($stmt === false) {
-    die('Prepare failed: ' . htmlspecialchars($conn->error));
+    die('Prepare failed: ' . htmlspecialchars($conn->errorInfo()[2]));
 }
-$stmt->bind_param("is", $entry_num, $judge_name);
-$stmt->execute();
-$stmt->store_result();
+$stmt->bindValue(':entry_num', $entry_num, PDO::PARAM_INT);
+$stmt->bindValue(':judge_name', $judge_name, PDO::PARAM_STR);
+$result = $stmt->execute();
+$row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if ($stmt->num_rows > 0) {
+if ($row) {
     echo "<script>
             window.onload = function() {
                 alert('You have already scored this contestant.');
-                window.location.href = 'judgeTableFestive.php';
+                window.location.href = 'judgeTable.php';
             };
           </script>";
-    $stmt->close();
     exit;
 }
 
-$stmt->close();
 ?>
 <div class="container">
 <div class="contestantname"> 

@@ -1,14 +1,15 @@
 <?php
+try {
+    $mysqlHost = 'localhost';
+    $mysqlDb = 'floatparade';
+    $mysqlUser = 'root';
+    $mysqlPass = '';
 
-$servername = "localhost"; 
-$username = "root"; 
-$password = ""; 
-$dbname = "floatparade"; 
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+    $mysqlConn = new PDO("mysql:host=$mysqlHost;dbname=$mysqlDb;charset=utf8mb4", $mysqlUser, $mysqlPass);
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    $mysqlConn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo "MySQL Connection failed: " . $e->getMessage();
 }
-
 ?>

@@ -40,13 +40,13 @@
     
     <div class="container">
         <?php
-        // Retrieve judge name from query string
+
         $judge = isset($_GET['judge']) ? htmlspecialchars($_GET['judge']) : '';
 
-        // Include database connection
-        require('../db/db_connection_sqlite.php'); // Adjust path as needed
 
-        // Prepare the SQL query to fetch scores for the selected judge
+        require('../db/db_connection_sqlite.php');
+
+
         $query = "SELECT entry_num, overall_appearance, artistry_design, craftsmanship, relevance_theme FROM scores WHERE judge_name = ?";
         $stmt = $conn->prepare($query);
         if ($stmt === false) {
@@ -54,12 +54,10 @@
         }
         $stmt->execute([$judge]);
 
-        // Display the table
         echo "<table>";
         echo "<thead><tr><th>Entry No.</th><th>Overall Appearance and Impact (30%) <p>(Overall look, aesthetic value, and attractiveness of the float)</p> </th><th>Artistry/Design (20%) <p>(Concept and artistic merits of the design and costumes if there is/are any taking into account balance, proportion, emphasis, harmony as primarily reflected in shapes/image and colors)</p> </th><th>Craftsmanship (30%) <p>(This pertains to how the design is realized and how the float is made. Such factors to be considered are the quality of the craftsmanship, stability of structure and decoration, choice, and creative use of materials)</p> </th><th>Relevance to the Festive Theme (20%) <p>Onward South Cotabato: Dreaming Big, Weaving more progress. Rising above challenges</p> </th><th>Total</th></tr></thead>";
         echo "<tbody>";
 
-        // Fetch and display each contestant's scores
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $total_score = $row['overall_appearance'] + $row['artistry_design'] + $row['craftsmanship'] + $row['relevance_theme'];
             echo "<tr>";
@@ -74,7 +72,6 @@
         echo "</tbody></table>";
         echo "<h2><u>$judge</u></h2>";
         
-        // Close the connection
         $conn = null;
         ?>
         <h3>Judge</h3>
