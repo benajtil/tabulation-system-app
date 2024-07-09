@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "floatparade",
+            "database": "${workspaceFolder:www}/db/floatparade.db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}
